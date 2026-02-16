@@ -1349,10 +1349,10 @@ const App = () => {
           {isHist ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {mods.map((e, i) => (
-                <button key={e.id} onClick={() => selectModule(e)} disabled={false} className={`group ${glassHover} rounded-xl p-6 text-center ${e.''}`}>
+                <button key={e.id} onClick={() => selectModule(e)} className={`group ${glassHover} rounded-xl p-6 text-center`}>
                   <div className="w-8 h-8 mx-auto rounded-full flex items-center justify-center text-white text-xs font-bold mb-2 shadow-sm" style={{background:'linear-gradient(135deg,#0ea5e9,#3b82f6)'}}>{i+1}</div>
                   <div className="text-3xl mb-2">{e.icon}</div><h3 className="font-bold text-gray-900 text-xs mb-0.5">{e.title}</h3><p className="text-[10px] text-gray-500 mb-2">{e.subtitle}</p>
-                  {!false ? <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold text-sky-700 bg-sky-50">Explore <ArrowRight className="w-2.5 h-2.5" /></span> : <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold text-gray-400 bg-gray-100"><Lock className="w-2.5 h-2.5" />Soon</span>}
+                  <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold text-sky-700 bg-sky-50">Explore <ArrowRight className="w-2.5 h-2.5" /></span>
                 </button>
               ))}
             </div>
@@ -1376,7 +1376,7 @@ const App = () => {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {mods.map(m => (
-                <button key={m.id} onClick={() => selectModule(m)} disabled={false} className={`group ${glassHover} rounded-xl p-5 text-left ${m.''}`}>
+                <button key={m.id} onClick={() => selectModule(m)} className={`group ${glassHover} rounded-xl p-5 text-left`}>
                   <div className="w-12 h-12 mb-2 rounded-lg flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform" style={{background:m.color+'12'}}>{m.icon}</div>
                   <h3 className="font-bold text-gray-900 text-sm mb-0.5">{m.title}</h3><p className="text-[11px] text-gray-500 mb-2">{m.subtitle}</p>
                   <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full font-semibold" style={{background:m.color+'12',color:m.color}}>Coming Soon</span>
@@ -1423,10 +1423,10 @@ const App = () => {
         <NavHeader onBack={() => setScreen('modules')} onHome={goHome} backLabel="Epochs" />
         <div className={`${glass} rounded-2xl p-6 mb-6 text-center`}><div className="text-5xl mb-2">{selectedEpoch.icon}</div><h1 className="text-xl font-bold text-gray-900" style={{fontFamily:"Georgia,serif"}}>{selectedEpoch.title}</h1><p className="text-gray-500 text-xs">{selectedEpoch.subtitle}</p></div>
         <div className="space-y-2.5">{selectedEpoch.levels.map((l, i) => (
-          <button key={l.id} onClick={() => selectLvl(l)} disabled={false} className={`w-full ${glassHover} rounded-xl p-4 text-left group ${l.''}`}>
+          <button key={l.id} onClick={() => selectLvl(l)} className={`w-full ${glassHover} rounded-xl p-4 text-left group`}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3"><div className={`w-11 h-11 rounded-lg flex items-center justify-center text-xl text-white shadow-md ${i==0?'bg-gradient-to-br from-green-500 to-emerald-600':i==1?'bg-gradient-to-br from-blue-500 to-sky-600':'bg-gradient-to-br from-purple-500 to-indigo-600'}`}>{['🌱','📚','🎓'][i]}</div><div><h3 className="font-bold text-gray-900 text-sm">{l.name}</h3>{false && l.message && <p className="text-[10px] text-gray-500">{l.message}</p>}{l.lessons && <p className="text-[10px] text-gray-500">{l.lessons.length} lessons</p>}</div></div>
-              {true ? <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" /> : <Lock className="w-4 h-4 text-gray-300" />}
+              <div className="flex items-center gap-3"><div className={`w-11 h-11 rounded-lg flex items-center justify-center text-xl text-white shadow-md ${i==0?'bg-gradient-to-br from-green-500 to-emerald-600':i==1?'bg-gradient-to-br from-blue-500 to-sky-600':'bg-gradient-to-br from-purple-500 to-indigo-600'}`}>{['🌱','📚','🎓'][i]}</div><div><h3 className="font-bold text-gray-900 text-sm">{l.name}</h3>{l.lessons && <p className="text-[10px] text-gray-500">{l.lessons.length} lessons</p>}</div></div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
             </div>
           </button>
         ))}</div>
