@@ -799,8 +799,8 @@ const App = () => {
   };
 
   // ---- Helpers ----------------------------------------------------
-  const isModuleLocked = (i, tid) => { if (tid !== 'islamic-finance' || i == 0) return false; return !completedModules.includes(modules[tid]?.[i-1]?.id); };
-  const isLessonLocked = (i, mid) => i == 0 ? false : !completedLessons[`${mid}-lesson-${i-1}`];
+  const isModuleLocked = () => false;
+  const isLessonLocked = () => false;
   const markModComplete = (id) => { if (!completedModules.includes(id)) setCompletedModules([...completedModules, id]); };
   const markLesComplete = (mid, i) => setCompletedLessons({ ...completedLessons, [`${mid}-lesson-${i}`]: true });
 
