@@ -786,15 +786,15 @@ const App = () => {
         }
         ]
       },
-      { id: 'e1-int', name: "Intermediate", locked: true, message: "Complete Beginner to unlock" },
-      { id: 'e1-adv', name: "Advanced", locked: true, message: "Complete Intermediate to unlock" },
+      { id: 'e1-int', name: "Intermediate", locked: false, message: "Complete Beginner to unlock" },
+      { id: 'e1-adv', name: "Advanced", locked: false, message: "Complete Intermediate to unlock" },
       ]
     },
-    { id: 'epoch-2', title: "Epoch 2: Birth of Islam", subtitle: "610–632 CE", icon: "🌅", locked: true, questions: [] },
-    { id: 'epoch-3', title: "Epoch 3: Rightly Guided Caliphs", subtitle: "632–661 CE", icon: "👑", locked: true, questions: [] },
-    { id: 'epoch-4', title: "Epoch 4: Umayyads & Abbasids", subtitle: "661–1258 CE", icon: "🏛️", locked: true, questions: [] },
-    { id: 'epoch-5', title: "Epoch 5: Sultanates & Empires", subtitle: "1258–1800", icon: "--️", locked: true, questions: [] },
-    { id: 'epoch-6', title: "Epoch 6: Colonialism to Today", subtitle: "1800–Present", icon: "🌐", locked: true, questions: [] },
+    { id: 'epoch-2', title: "Epoch 2: Birth of Islam", subtitle: "610–632 CE", icon: "🌅", locked: false, questions: [] },
+    { id: 'epoch-3', title: "Epoch 3: Rightly Guided Caliphs", subtitle: "632–661 CE", icon: "👑", locked: false, questions: [] },
+    { id: 'epoch-4', title: "Epoch 4: Umayyads & Abbasids", subtitle: "661–1258 CE", icon: "🏛️", locked: false, questions: [] },
+    { id: 'epoch-5', title: "Epoch 5: Sultanates & Empires", subtitle: "1258–1800", icon: "--️", locked: false, questions: [] },
+    { id: 'epoch-6', title: "Epoch 6: Colonialism to Today", subtitle: "1800–Present", icon: "🌐", locked: false, questions: [] },
     ]
   };
 
