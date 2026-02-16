@@ -807,15 +807,14 @@ const App = () => {
   const selectMainTopic = (id) => { setSelectedMainTopic(mainTopics.find(t => t.id == id)); setLastSelectedTopicId(id); setScreen('modules'); };
   const selectModule = (mod, idx) => {
     if (selectedMainTopic?.id == 'islamic-history' && mod.levels) { setSelectedEpoch(mod); setScreen('epoch-levels'); return; }
-    if (selectedMainTopic?.id == 'islamic-finance' && isModuleLocked(idx, selectedMainTopic.id)) return;
-    if (mod.locked) return;
     if (selectedMainTopic?.id == 'islamic-finance' && mod.lessons) { setSelectedModule(mod); setScreen('lessons'); return; }
+    if (mod.isSpeedRound && mod.questions?.length) { setSelectedModule(mod); resetQuiz(mod.questions); setScreen('speed-round'); return; }
     if (!mod.questions?.length) { alert('Coming soon!'); return; }
     setSelectedModule(mod); resetQuiz(mod.questions); setScreen('quiz');
   };
-  const selectLvl = (l) => { if (l.locked) return; setSelectedLevel(l); setScreen('history-lessons'); };
+  const selectLvl = (l) => { setSelectedLevel(l); setScreen('history-lessons'); };
   const selectHistLesson = (l) => { if (!l.questions.length) return; setSelectedLesson(l); resetQuiz(l.questions); setScreen('quiz'); };
-  const selectLes = (l, i) => { if (isLessonLocked(i, selectedModule.id) || !l.questions.length) return; setSelectedLesson({...l, lessonIndex: i}); resetQuiz(l.questions); setScreen('quiz'); };
+  const selectLes = (l, i) => { if (!l.questions.length) return; setSelectedLesson({...l, lessonIndex: i}); resetQuiz(l.questions); setScreen('quiz'); };
   const resetQuiz = (questions) => { setCurrentQuestion(0); setSelectedAnswer(null); setHeldItem(null); setDragOverCol(null); setShowExplanation(false); setShowConceptIntro(true); setConceptIndex(0); setQuizScore(0); setStreak(0); setQuizResults([]); if (questions) buildShuffleMaps(questions); };
   const goHome = () => { setScreen('home'); setSelectedMainTopic(null); setSelectedModule(null); setSelectedLesson(null); };
   const goModules = () => { setScreen('modules'); setSelectedModule(null); setSelectedLesson(null); };
@@ -1076,34 +1075,31 @@ const App = () => {
           {isHist ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {mods.map((e, i) => (
-                <button key={e.id} onClick={() => !e.locked && selectModule(e)} disabled={e.locked} className={`group ${glassHover} rounded-xl p-6 text-center ${e.locked ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <button key={e.id} onClick={() => selectModule(e)} className={`group ${glassHover} rounded-xl p-6 text-center`}>
                   <div className="w-8 h-8 mx-auto rounded-full flex items-center justify-center text-white text-xs font-bold mb-2 shadow-sm" style={{background:'linear-gradient(135deg,#0ea5e9,#3b82f6)'}}>{i+1}</div>
                   <div className="text-3xl mb-2">{e.icon}</div><h3 className="font-bold text-gray-900 text-xs mb-0.5">{e.title}</h3><p className="text-[10px] text-gray-500 mb-2">{e.subtitle}</p>
-                  {!e.locked ? <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold text-sky-700 bg-sky-50">Explore <ArrowRight className="w-2.5 h-2.5" /></span> : <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold text-gray-400 bg-gray-100"><Lock className="w-2.5 h-2.5" />Soon</span>}
+                  <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold text-sky-700 bg-sky-50">Explore <ArrowRight className="w-2.5 h-2.5" /></span>
                 </button>
               ))}
             </div>
           ) : isFin ? (
             <div className="max-w-xl mx-auto space-y-3">
-              {mods.map((m, i) => {
-                const locked = isModuleLocked(i, selectedMainTopic.id);
-                return (
-                  <button key={m.id} onClick={() => selectModule(m, i)} disabled={locked} className={`w-full ${glassHover} rounded-xl p-5 text-left group ${locked ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              {mods.map((m, i) => (
+                  <button key={m.id} onClick={() => selectModule(m, i)} className={`w-full ${glassHover} rounded-xl p-5 text-left group`}>
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shadow-sm" style={{background:m.color+'12'}}>{locked ? <Lock className="w-5 h-5 text-gray-300" /> : m.icon}</div>
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shadow-sm" style={{background:m.color+'12'}}>{m.icon}</div>
                       <div className="flex-grow min-w-0"><h3 className="font-bold text-gray-900 text-sm">{m.title}</h3><p className="text-xs text-gray-500">{m.subtitle}</p>
                         <div className="flex gap-2 mt-1">{m.difficulty && <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${m.difficulty=='Beginner'?'bg-green-100 text-green-700':'bg-orange-100 text-orange-700'}`}>{m.difficulty}</span>}{m.lessonCount && <span className="text-[10px] text-gray-400">{m.lessonCount} lessons</span>}</div>
                       </div>
-                      {!locked && <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />}
+                      <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
                     </div>
                   </button>
-                );
-              })}
+              ))}
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {mods.map(m => (
-                <button key={m.id} onClick={() => selectModule(m)} disabled={m.locked} className={`group ${glassHover} rounded-xl p-5 text-left ${m.locked ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <button key={m.id} onClick={() => selectModule(m)} className={`group ${glassHover} rounded-xl p-5 text-left`}>
                   <div className="w-12 h-12 mb-2 rounded-lg flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform" style={{background:m.color+'12'}}>{m.icon}</div>
                   <h3 className="font-bold text-gray-900 text-sm mb-0.5">{m.title}</h3><p className="text-[11px] text-gray-500 mb-2">{m.subtitle}</p>
                   <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full font-semibold" style={{background:m.color+'12',color:m.color}}>Coming Soon</span>
@@ -1127,13 +1123,13 @@ const App = () => {
         </div>
         <div className="space-y-2.5 max-w-lg mx-auto">
           {selectedModule.lessons?.map((l, i) => {
-            const lk = isLessonLocked(i, selectedModule.id), done = completedLessons[`${selectedModule.id}-lesson-${i}`];
+            const done = completedLessons[`${selectedModule.id}-lesson-${i}`];
             return (
-              <button key={l.id} onClick={() => selectLes(l, i)} disabled={lk} className={`w-full ${glassHover} rounded-lg p-4 text-left group ${lk ? 'opacity-50 cursor-not-allowed' : ''} ${done ? 'ring-1 ring-emerald-200' : ''}`}>
+              <button key={l.id} onClick={() => selectLes(l, i)} className={`w-full ${glassHover} rounded-lg p-4 text-left group ${done ? 'ring-1 ring-emerald-200' : ''}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-md flex items-center justify-center font-bold text-xs shadow-sm" style={{background:lk?'#e5e7eb':selectedModule.color+'12',color:lk?'#9ca3af':selectedModule.color}}>{lk?<Lock className="w-3.5 h-3.5" />:i+1}</div>
-                  <div className="flex-grow min-w-0"><h3 className="font-bold text-gray-900 text-xs">{l.title}</h3><p className="text-[10px] text-gray-500">{l.description}</p><span className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><Clock className="w-2.5 h-2.5" />{l.duration}{!l.questions.length && !lk && <span className="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium">Soon</span>}</span></div>
-                  {!lk && <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-emerald-600 transition-all" />}
+                  <div className="w-9 h-9 rounded-md flex items-center justify-center font-bold text-xs shadow-sm" style={{background:selectedModule.color+'12',color:selectedModule.color}}>{i+1}</div>
+                  <div className="flex-grow min-w-0"><h3 className="font-bold text-gray-900 text-xs">{l.title}</h3><p className="text-[10px] text-gray-500">{l.description}</p><span className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><Clock className="w-2.5 h-2.5" />{l.duration}{!l.questions.length && <span className="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium">Soon</span>}</span></div>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-emerald-600 transition-all" />
                 </div>
               </button>
             );
@@ -1150,10 +1146,10 @@ const App = () => {
         <NavHeader onBack={() => setScreen('modules')} onHome={goHome} backLabel="Epochs" />
         <div className={`${glass} rounded-2xl p-6 mb-6 text-center`}><div className="text-5xl mb-2">{selectedEpoch.icon}</div><h1 className="text-xl font-bold text-gray-900" style={{fontFamily:"Georgia,serif"}}>{selectedEpoch.title}</h1><p className="text-gray-500 text-xs">{selectedEpoch.subtitle}</p></div>
         <div className="space-y-2.5">{selectedEpoch.levels.map((l, i) => (
-          <button key={l.id} onClick={() => !l.locked && selectLvl(l)} disabled={l.locked} className={`w-full ${glassHover} rounded-xl p-4 text-left group ${l.locked ? 'opacity-50 cursor-not-allowed' : ''}`}>
+          <button key={l.id} onClick={() => selectLvl(l)} className={`w-full ${glassHover} rounded-xl p-4 text-left group`}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3"><div className={`w-11 h-11 rounded-lg flex items-center justify-center text-xl text-white shadow-md ${i==0?'bg-gradient-to-br from-green-500 to-emerald-600':i==1?'bg-gradient-to-br from-blue-500 to-sky-600':'bg-gradient-to-br from-purple-500 to-indigo-600'}`}>{['🌱','📚','🎓'][i]}</div><div><h3 className="font-bold text-gray-900 text-sm">{l.name}</h3>{l.locked && l.message && <p className="text-[10px] text-gray-500">{l.message}</p>}{!l.locked && l.lessons && <p className="text-[10px] text-gray-500">{l.lessons.length} lessons</p>}</div></div>
-              {!l.locked ? <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" /> : <Lock className="w-4 h-4 text-gray-300" />}
+              <div className="flex items-center gap-3"><div className={`w-11 h-11 rounded-lg flex items-center justify-center text-xl text-white shadow-md ${i==0?'bg-gradient-to-br from-green-500 to-emerald-600':i==1?'bg-gradient-to-br from-blue-500 to-sky-600':'bg-gradient-to-br from-purple-500 to-indigo-600'}`}>{['🌱','📚','🎓'][i]}</div><div><h3 className="font-bold text-gray-900 text-sm">{l.name}</h3>{l.lessons && <p className="text-[10px] text-gray-500">{l.lessons.length} lessons</p>}</div></div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
             </div>
           </button>
         ))}</div>
